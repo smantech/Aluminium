@@ -426,4 +426,38 @@ if (elements.quoteForm) {
     
     alert('Thank you! Your request has been submitted. We will contact you soon.');
   });
+
+}
+
+// Double-tap zoom blocker
+document.documentElement.addEventListener('dblclick', (e) => {
+  e.preventDefault();
+}, { passive: false });
+
+// Pinch-zoom blocker
+let lastTouchEnd = 0;
+document.addEventListener('touchend', (event) => {
+  const now = Date.now();
+  if (now - lastTouchEnd <= 300) {
+    event.preventDefault();
+  }
+  lastTouchEnd = now;
+}, { passive: false });
+
+// iOS-specific hacks
+if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+  document.addEventListener('gesturestart', (e) => {
+    e.preventDefault();
+    document.body.style.zoom = 0.99;
+  });
+
+  document.addEventListener('gesturechange', (e) => {
+    e.preventDefault(); 
+    document.body.style.zoom = 0.99;
+  });
+
+  document.addEventListener('gestureend', (e) => {
+    e.preventDefault();
+    document.body.style.zoom = 1;
+  });
 }
