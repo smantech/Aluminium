@@ -3,11 +3,7 @@
 <head>
   <!-- REPLACE your current meta viewport with this -->
 <meta name="viewport" 
-      content="width=device-width, 
-               initial-scale=1.0, 
-               maximum-scale=1.0, 
-               minimum-scale=1.0, 
-               user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Standard Aluminium & Glass — Windows & Doors</title>
   <meta name="description" content="Quality aluminium fabrication for windows and doors with professional installation">
   
@@ -297,32 +293,6 @@
     <video id="zoomVideo" controls style="display:none"></video>
   </div>
 
-<script>
-// Block zoom gestures without breaking scroll
-let lastTouchEnd = 0;
-const handleTouch = (e) => {
-  if (e.touches.length > 1) {
-    e.preventDefault(); // Block multi-touch zoom
-    return;
-  }
-  
-  const now = Date.now();
-  if (now - lastTouchEnd <= 300) {
-    e.preventDefault(); // Block double-tap zoom
-  }
-  lastTouchEnd = now;
-};
-
-document.addEventListener('touchstart', handleTouch, {passive: false});
-document.addEventListener('touchend', handleTouch, {passive: false});
-document.addEventListener('touchmove', (e) => {
-  if (e.scale !== 1) e.preventDefault();
-}, {passive: false});
-
-// iOS specific fix
-if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-  document.addEventListener('gesturestart', (e) => e.preventDefault());
-}
-  </script>
+ 
 
 
