@@ -429,3 +429,28 @@ if (elements.quoteForm) {
 
 }
 
+
+
+
+
+
+// Block keyboard zoom (Ctrl +, Ctrl -)
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '0')) {
+    e.preventDefault();
+  }
+});
+
+// Block pinch-zoom on touch devices
+document.addEventListener('gesturestart', (e) => {
+  e.preventDefault();
+});
+
+// Optional: Force reset zoom if bypassed (less aggressive)
+window.addEventListener('resize', () => {
+  setTimeout(() => {
+    document.body.style.zoom = "100%";
+  }, 100);
+});
+
+
