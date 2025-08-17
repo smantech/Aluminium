@@ -714,24 +714,15 @@ footer {
 }
 
 
-/* Prevent zoom but allow scrolling */
-html {
-  touch-action: pan-y;
-  -webkit-text-size-adjust: 100%;
-  overflow-x: hidden;
+/* Allow scrolling but block zoom gestures */
+html, body {
+  touch-action: manipulation; /* Disables double-tap zoom */
+  width: 100%;
+  height: auto;
+  overflow-x: hidden; /* Prevents horizontal scroll */
 }
 
+/* Optional: Reset position:fixed if you added it earlier */
 body {
-  /* Allow scrolling */
-  overflow-y: auto !important;
-  min-height: 100vh;
-  
-  /* Prevent text selection */
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-/* Ensure scrollable areas work */
-.scrollable-content {
-  -webkit-overflow-scrolling: touch;
+  position: static !important;
 }
