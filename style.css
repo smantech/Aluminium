@@ -714,16 +714,24 @@ footer {
 }
 
 
-/* Block zooming and text selection */
-/* ADD these new rules at the BOTTOM of your CSS file */
+/* Prevent zoom but allow scrolling */
 html {
-  -webkit-text-size-adjust: 100%;
   touch-action: pan-y;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
 }
 
 body {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
+  /* Allow scrolling */
+  overflow-y: auto !important;
   min-height: 100vh;
+  
+  /* Prevent text selection */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Ensure scrollable areas work */
+.scrollable-content {
+  -webkit-overflow-scrolling: touch;
 }
