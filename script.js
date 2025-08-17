@@ -426,10 +426,7 @@ if (elements.quoteForm) {
     
     alert('Thank you! Your request has been submitted. We will contact you soon.');
   });
-
 }
-
-
 
 
 
@@ -466,5 +463,3 @@ document.addEventListener('DOMContentLoaded', () => {
   preventZoom();
   // ... rest of your existing initialization code
 });
-
-
