@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="viewport" 
+  <!-- REPLACE your current meta viewport with this -->
+<meta name="viewport" 
       content="width=device-width, 
                initial-scale=1.0, 
                maximum-scale=1.0, 
-               minimum-scale=1.0, 
-               user-scalable=no, 
-               viewport-fit=cover">
+               user-scalable=no">
   <title>Standard Aluminium & Glass — Windows & Doors</title>
   <meta name="description" content="Quality aluminium fabrication for windows and doors with professional installation">
   
@@ -297,9 +296,17 @@
     <video id="zoomVideo" controls style="display:none"></video>
   </div>
 
+<script>
+// ADD this script (works alongside your existing JS)
+document.addEventListener('touchmove', function(e) {
+  if(e.scale !== 1) e.preventDefault();
+}, {passive: false});
+  </script>
+  
   <!-- JavaScript -->
   <script src="script.js"></script>
 </body>
 
 </html>
+
 
