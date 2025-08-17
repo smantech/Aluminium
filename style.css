@@ -710,4 +710,26 @@ footer {
     width: auto;
     height: 60vh;
   }
+
 }
+
+
+/* Block zooming and text selection */
+html {
+  -webkit-text-size-adjust: 100%; 
+  touch-action: pan-x pan-y; /* Only allow scrolling */
+  overscroll-behavior: contain;
+}
+
+body {
+  /* Prevent tap highlights and selections */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  
+  /* Force full height */
+  height: 100vh;
+  overflow: hidden;
+  }
