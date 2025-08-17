@@ -4,6 +4,7 @@
  * =============================================
  * This script handles:
  * - Mobile responsive menu with hamburger
+ * - Active navigation on scroll (desktop + mobile)
  * - Video player with controls
  * - Gallery carousels
  * - WhatsApp integration
@@ -11,7 +12,7 @@
  * - Smooth scrolling
  */
 
-// ===== CONSTANTS AND ELEMENTS =====
+// ===== CONSTANTS =====
 const PHONE_NUMBER = '+2349036320387';
 const STATES_DB = {
   Nigeria: ["Lagos", "Abuja", "Kano", "Rivers", "Oyo", "Delta", "Ogun", "Enugu"],
@@ -19,11 +20,11 @@ const STATES_DB = {
   "South Africa": ["Gauteng", "Western Cape", "KwaZulu-Natal", "Eastern Cape"]
 };
 
-// DOM Elements
+// ===== DOM ELEMENTS =====
 const elements = {
   year: document.getElementById('year'),
   modal: document.getElementById('modal'),
-  modalImg: document.getElementById('modal')?.querySelector('img'),
+  modalImg: document.querySelector('#modal img'),
   whatsappBtn: document.getElementById('whatsappBtn'),
   sendWhatsBtn: document.getElementById('sendWhats'),
   quoteForm: document.getElementById('quoteForm'),
@@ -35,7 +36,8 @@ const elements = {
   zoomContent: document.getElementById('zoomImg'),
   zoomVideo: document.getElementById('zoomVideo'),
   hamburger: document.querySelector('.hamburger'),
-  mobileMenu: document.querySelector('.mobile-menu')
+  mobileMenu: document.querySelector('.mobile-menu'),
+  navLinks: document.querySelectorAll('.nav-link')
 };
 
 // ===== INITIALIZATION =====
@@ -45,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Initialize all components
   initMobileMenu();
+  initScrollSpy(); // Active nav tracking
   initCarousels();
   initLocationSelectors();
   initSmoothScrolling();
@@ -52,6 +55,35 @@ document.addEventListener('DOMContentLoaded', () => {
   initWhatsAppButtons();
   initVideoPlayer();
 });
+
+// ===== ACTIVE NAVIGATION ON SCROLL =====
+function initScrollSpy() {
+  const sections = document.querySelectorAll('section[id]');
+  
+  if (!sections.length || !elements.navLinks.length) return;
+
+  function updateActiveNav() {
+    const scrollPosition = window.scrollY + 200; // Adjust offset as needed
+    
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.offsetHeight;
+      const sectionId = section.getAttribute('id');
+      
+      if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+        elements.navLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === `#${sectionId}`) {
+            link.classList.add('active');
+          }
+        });
+      }
+    });
+  }
+  
+  window.addEventListener('scroll', updateActiveNav);
+  window.addEventListener('load', updateActiveNav);
+}
 
 // ===== MOBILE MENU =====
 function initMobileMenu() {
@@ -69,39 +101,31 @@ function initMobileMenu() {
     document.body.style.overflow = isOpening ? 'hidden' : '';
     elements.hamburger.setAttribute('aria-expanded', isOpening);
     
-    // Pause videos when menu opens
     if (isOpening) {
       document.querySelectorAll('video').forEach(v => v.pause());
     }
   }
 
-  // Event listeners
   elements.hamburger.addEventListener('click', toggleMenu);
   overlay.addEventListener('click', toggleMenu);
 
-  // Menu links
   document.querySelectorAll('.mobile-menu a').forEach(link => {
     if (!link.id.includes('Whatsapp')) {
       link.addEventListener('click', function(e) {
         e.preventDefault();
         toggleMenu();
         const target = document.querySelector(link.getAttribute('href'));
-        if (target) {
-          setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 300);
-        }
+        target && setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 300);
       });
     }
   });
 
-  // WhatsApp buttons
   [elements.whatsappBtn, document.getElementById('mobileWhatsappBtn')].forEach(btn => {
-    if (btn) {
-      btn.addEventListener('click', function(e) {
-        if (this.id === 'mobileWhatsappBtn') e.preventDefault();
-        openWhatsApp('Hello, I need information about your services');
-        if (this.id === 'mobileWhatsappBtn') toggleMenu();
-      });
-    }
+    btn?.addEventListener('click', function(e) {
+      if (this.id === 'mobileWhatsappBtn') e.preventDefault();
+      openWhatsApp('Hello, I need information about your services');
+      if (this.id === 'mobileWhatsappBtn') toggleMenu();
+    });
   });
 }
 
@@ -148,7 +172,6 @@ function initVideoPlayer() {
     }
   }
 
-  // Event listeners
   if (playIcon) playIcon.addEventListener('click', (e) => {
     e.stopPropagation();
     togglePlayback();
@@ -193,9 +216,7 @@ function prefill(service) {
   
   const contactSection = document.getElementById('contact');
   if (contactSection) {
-    setTimeout(() => {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+    setTimeout(() => contactSection.scrollIntoView({ behavior: 'smooth' }), 100);
   }
 }
 
@@ -203,10 +224,7 @@ function prefill(service) {
 function initCarousels() {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        setupCarousel(entry.target);
-        observer.unobserve(entry.target);
-      }
+      if (entry.isIntersecting) setupCarousel(entry.target);
     });
   }, { threshold: 0.1 });
 
@@ -223,34 +241,22 @@ function setupCarousel(carousel) {
   const [prevBtn, nextBtn] = ['.prev', '.next'].map(s => carousel.querySelector(s));
   let currentIndex = 0, autoScrollTimeout, isScrolling = false;
 
-  if (images.length > 0) {
-    images[0].style.opacity = '1';
-    images.forEach((img, i) => {
-      if (i !== 0) {
-        img.loading = 'lazy';
-        img.decoding = 'async';
-      }
-    });
-  }
+  if (images.length) images[0].style.opacity = '1';
 
   function startAutoScroll() {
     clearTimeout(autoScrollTimeout);
-    if (!isScrolling) {
-      autoScrollTimeout = setTimeout(() => {
-        nextImage();
-        startAutoScroll();
-      }, 4000);
-    }
+    !isScrolling && (autoScrollTimeout = setTimeout(() => {
+      nextImage();
+      startAutoScroll();
+    }, 4000));
   }
 
   function nextImage() {
-    if (images.length === 0) return;
     currentIndex = (currentIndex + 1) % images.length;
     updateCarousel();
   }
 
   function prevImage() {
-    if (images.length === 0) return;
     currentIndex = (currentIndex - 1 + images.length) % images.length;
     updateCarousel();
   }
@@ -261,7 +267,6 @@ function setupCarousel(carousel) {
     slide.scrollTo({ left: images[currentIndex].offsetLeft, behavior: 'smooth' });
   }
 
-  // Event listeners
   if (nextBtn) nextBtn.addEventListener('click', () => {
     clearTimeout(autoScrollTimeout);
     nextImage();
@@ -274,22 +279,25 @@ function setupCarousel(carousel) {
     startAutoScroll();
   });
 
-  carousel.addEventListener('mouseenter', () => { isScrolling = true; clearTimeout(autoScrollTimeout); });
-  carousel.addEventListener('mouseleave', () => { isScrolling = false; startAutoScroll(); });
+  carousel.addEventListener('mouseenter', () => {
+    isScrolling = true;
+    clearTimeout(autoScrollTimeout);
+  });
 
-  // Touch events
-  let startX, isDragging = false;
+  carousel.addEventListener('mouseleave', () => {
+    isScrolling = false;
+    startAutoScroll();
+  });
+
+  let startX;
   slide.addEventListener('touchstart', (e) => {
     startX = e.touches[0].pageX;
-    isDragging = true;
     clearTimeout(autoScrollTimeout);
   }, { passive: true });
 
   slide.addEventListener('touchend', (e) => {
-    if (!isDragging) return;
-    isDragging = false;
     const diffX = startX - e.changedTouches[0].pageX;
-    if (Math.abs(diffX) > 50) diffX > 0 ? nextImage() : prevImage();
+    Math.abs(diffX) > 50 && (diffX > 0 ? nextImage() : prevImage());
     startAutoScroll();
   });
 
@@ -314,11 +322,9 @@ function initLocationSelectors() {
     const country = this.value;
     elements.stateSelect.innerHTML = '<option value="" disabled selected>Select State</option>';
     
-    if (country && STATES_DB[country]) {
-      STATES_DB[country].forEach(state => {
-        elements.stateSelect.add(new Option(state, state));
-      });
-    }
+    STATES_DB[country]?.forEach(state => {
+      elements.stateSelect.add(new Option(state, state));
+    });
   });
   
   if (elements.countrySelect.value === 'Nigeria') {
