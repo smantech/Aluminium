@@ -698,7 +698,7 @@ footer {
   }
   
   .brand::after {
-    content: "S.A.G";
+    content: "STANDARD ALUMINIUM";
     font-weight: 700;
     font-size: 14px;
     margin-left: 5px;
@@ -727,4 +727,5 @@ html, body {
 .carousel-slide,
 video {
   touch-action: auto !important;
+
 }
