@@ -434,23 +434,37 @@ if (elements.quoteForm) {
 
 
 
-// Block keyboard zoom (Ctrl +, Ctrl -)
-document.addEventListener('keydown', (e) => {
-  if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '0')) {
-    e.preventDefault();
-  }
-});
+// Block zooming but preserve hamburger functionality
+function preventZoom() {
+  // Block keyboard zoom
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '0')) {
+      e.preventDefault();
+    }
+  });
 
-// Block pinch-zoom on touch devices
-document.addEventListener('gesturestart', (e) => {
-  e.preventDefault();
-});
+  // Block pinch-zoom but allow on carousels/videos
+  document.addEventListener('gesturestart', (e) => {
+    if (!e.target.closest('.carousel-slide, video, .hamburger')) {
+      e.preventDefault();
+    }
+  });
 
-// Optional: Force reset zoom if bypassed (less aggressive)
-window.addEventListener('resize', () => {
-  setTimeout(() => {
-    document.body.style.zoom = "100%";
-  }, 100);
+  // Reset zoom if bypassed
+  let lastZoom = 100;
+  window.addEventListener('resize', () => {
+    const newZoom = Math.round(window.outerWidth / window.innerWidth * 100);
+    if (newZoom !== lastZoom && newZoom !== 100) {
+      document.body.style.zoom = "100%";
+      lastZoom = 100;
+    }
+  });
+}
+
+// Initialize after DOM loads
+document.addEventListener('DOMContentLoaded', () => {
+  preventZoom();
+  // ... rest of your existing initialization code
 });
 
 
