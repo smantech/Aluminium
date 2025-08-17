@@ -714,15 +714,17 @@ footer {
 }
 
 
-/* Allow scrolling but block zoom gestures */
+/* Reset any problematic properties */
 html, body {
-  touch-action: manipulation; /* Disables double-tap zoom */
   width: 100%;
-  height: auto;
-  overflow-x: hidden; /* Prevents horizontal scroll */
+  height: 100%;
+  overflow-x: hidden; /* Only prevent horizontal scroll */
 }
 
-/* Optional: Reset position:fixed if you added it earlier */
-body {
-  position: static !important;
+/* Allow touch events on interactive elements */
+.hamburger,
+.mobile-menu a,
+.carousel-slide,
+video {
+  touch-action: auto !important;
 }
