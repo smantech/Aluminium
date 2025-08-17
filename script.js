@@ -461,3 +461,12 @@ if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
     document.body.style.zoom = 1;
   });
 }
+
+
+
+// Reset scale on any resize event
+window.addEventListener('resize', () => {
+  if (window.visualViewport) {
+    window.visualViewport.scale = 1;
+  }
+});
